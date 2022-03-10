@@ -1,0 +1,71 @@
+= Release Notes
+
+== Release information
+[options="header",cols="1,1,1"]
+|===
+|Package name   |package name short   |Version   
+//----------------------
+|Finance Manager   	|FinManager   	|0.0.0   
+|APP:loader   		|loader   		|0.0.0   
+  
+|===
+
+
+=== Packages
+
+[options="header",cols="1,1,1,1"]
+|===
+|Name   	|Version   			|Supplier   |Purpose   
+//-------------------------------
+|Python   		|3.9.0   			|Python   	|interpreter   
+|Django   		|3.1.5   			|Django   	|Web Application development kit   
+|Eclipse   		|2019-03 (4.11.0)   |Eclipse   	|IDE
+|Pydev   		|?   				|Eclipse   	|Eclipse plugin for python 
+|asciidoctor   	|?				   	|Eclipse   	|ASCII Doc Ecipse plugin 
+|Bootstrap   	|?				   	|Layout   	|Layout         
+|===
+
+
+
+
+=== Finance Manager
+==== New or changed features
+. initial setup done
+. installed _loader_ APP
+
+==== Fixed issues
+==== Known issues and limitations
+
+=== APP: loader
+==== New or changed features
+. created 
+
+==== Fixed issues
+==== Known issues and limitations
+
+=== Release tests
+
+== Log
+. initial django project setup done
+. created new APP: loader
+. installed _loader_ APP
+. created superuser:
+.. User: wakl
+.. email: w.kloos@gmx.de
+.. 3panapo81
+. added loader to admin: Creditor
+. Design:
+.. use cases created
+... statistics
+... administration
+... transaction
+.. class diagram
+... Transaction
+... Project
+... Creditor
+... User
+. created wireframes: 
+.. statistics
+.. transaction
+.. start page
+	

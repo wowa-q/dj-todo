@@ -1,0 +1,396 @@
+= Django in a nut shell
+
+*References:*
+
+* *<<docs.djangoproject.com/en/3.1/contents/, Docu>>*
+
+== Utilities
+=== Create new Django project:
+[source]
+----
+django-admin startproject PROJECT_NAME
+----
+
+=== Create new App:
+[source]
+----
+django-admin startapp APP_NAME
+----
+
+=== *Start server:* 
+[source]
+----
+python manage.py runserver
+----
+ 
+NOTE: Hit _CTRL + BREAK_ or _CTRL + C_ to stop the development server.
+
+=== Create data base:
+[source]
+----
+python manage.py makemigrations
+----
+
+*_Each time you make a change to the data model and call makemigrations._*
+At this point, Django created a file named 0001_initial.py inside the boards/migrations directory. It represents the current state of our application models. In the next step, Django will use this file to create the tables and columns.
+
+=== Apply migration:
+[source]
+----
+python manage.py migrate
+----
+With the _migrate_ command, you put those changes into effect by running commands against the database
+
+=== Start Python shell:
+[source]
+----
+python manage.py shell
+----
+NOTE: We are adding our project to the sys.path and loading Django. That means we can import our models and any other resource within the project and play with it.
+This can be helpful to experiment with the implemented classes similar as with the console in eclipse
+
+to exit the shell use:
+[source]
+----
+exit()
+----
+
+
+== Django folder structure
+
+=== Django project
+* *_djangoProjecName_*
+** *_djangoProjecName_*
+*** [blue]#init.py#
+*** [blue]#settings.py#: all project's configurations	
+*** [blue]#urls.py#: routes mapping within the project (https://docs.djangoproject.com/en/3.2/topics/http/urls/[doc] )
+*** [blue]#wsgi.py#: small gateway interface for deployment (https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/[doc])
+*** [blue]#asgi.py#: small gateway interface for deployment (https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/[doc])
+** [blue]#manage.py#: Django command line utility (https://docs.djangoproject.com/en/3.2/ref/django-admin/[doc])
+** *_templates_*: Django template engine
+** *_static_*: Folder for static files, such as CSS, or Js etc.
+** *_APP_NAME_*: Folder created by creating a new App in the project. The name can be selected by creating new App.
+* *_VENV_NAME_*: Python virtual environment. The name can be selected by creating the virtual environment
+
+=== Django APP
+* *_migrations_*:
+* *_templates_*: folder contains web site templates of the App
+* *_static_*: similar to templates folder for App specific static files
+* [blue]#init.py#: tells Python to treat the directory as a Python package.
+* [blue]#admin.py#: contains settings for the Django admin pages.
+* [blue]#apps.py#: contains settings for the application configuration.
+* [blue]#models.py#: contains a series of classes that Djangos ORM converts to database tables.
+* [blue]#views.py#: contains functions and classes that handle what data is displayed in the HTML templates.
+* [blue]#tests.py#: contains test classes
+
+
+
+== Django project
+=== settings.py
+* [blue]#INSTALLED_APPS#: has all Apps in the project, including base Django Apps
+
+=== views.py 
+Views are Python functions that receive an HttpRequest object and returns an HttpResponse object. Receive a request as a parameter and returns a response as a result.
+
+
+=== urls.py
+* _from APP_NAME import views_
+* [blue]#url(r'^$', views.FUNCTIONNAME, name='home')#, part of [blue]#urlpatterns = [#
+** [blue]#^$# regex, will match an empty path
+
+=== models
+Is representation of the data base of the web site.
+ Each class will be transformed into database tables.
+
+==== model operations
+
+[cols="1,1,1"]
+|===
+|*Operation*, |*Example*, |*Notes*
+|Create an object without saving, |[blue]#_board=Board()_#, |_Board_ inherits from models.Model 
+|Save an object (create or update), |[blue]#_board.save()_#, |built in API 
+|Create and save an object in a data base, |[blue]#_Board.objects.create(name='', description='')_#, |built in API 
+|List all objects, |[blue]#_Board.objects.all()_#, |built in API
+|Get a single object, identified by a field, |[blue]#_Boards.objects.get(id=1)_#, |the field must be unique, otherwise more objects will be returned 
+|===
+
+== Django Template engine
+To use predefined templates the [blue]#settings.py# needs to be updated: 
+[source]
+----
+'DIRS': []
+----
+For example:
+[source]
+----
+os.path.join(BASE_DIR, 'templates')
+----
+NOTE: the [blue]#os# module needs to be imported in [blue]#settings.py#.
+
+
+
+
+
+=== Django Template Language
+Iterate through the object list:
+[source]
+----
+{% for ... in ... %}
+----
+Example:
+[source]
+----
+{% for board in boards %}
+{{ board.name }}
+{% endfor %}
+----
+To render:
+[source]
+----
+{{variable}}
+----
+Example:
+. 
+[source]
+----
+{{ board.name }}
+----
+
+=== Static Files Setup
+Static files are the CSS, JavaScripts, Fonts, Images, or any other resources we may use to compose the user interface.
+Django provides features to handle these static files in [blue]#django.contrib.staticfiles#
+
+To use these features features, they need to be registered in [blue]#INSTALLED_APPS# in the [blue]#settings.py# 
+In the project root new folder needs to be created *_static_*.
+
+NOTE: it is possible to get free to use fonts, so there is no need to create own. For example <<getbootstrap.com,bootstrap>> can be downloaded and unpacked into *_static_* folder. In the exercise _css/bootstrap.min.css_ is used. 
+
+To get used of the static files Django needs to be instructed where to find them:
+in [blue]#settings.py#:
+[source]
+----
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+----
+After this the html template needs to adjusted:
+[source]
+----
+{% load static %}
+----
+_[blue]#{% static %}#_ is to tell where the resource file is stored. In the exercise it is stored here:
+[source]
+----
+{% static 'css/bootstrap.min.css' %}
+----
+The [blue]#{% static %}# template tag uses the [blue]#STATIC_URL# configuration in the [blue]#settings.py#
+
+TIP: use the [blue]#{% static %}# whenever you need to refer to a *CSS*, *JavaScript* or *image* file
+
+
+
+
+== Admin interface
+The admin app is not meant to be used by web site visitors
+
+=== Configure Django admin
+[source]
+----
+python manage.py createsuperuser
+----
+WARNING: The admin needs to be created with a password. In exercise used password: _123_ and the user name _admin_
+ +
+
+Each app can use admin interface: within the App, open [blue]#admin.py# and use 
+[source]
+----
+admin.site.register(Board)
+----
+Board is a class derived from [blue]#models.Model#
+
+== URLs
+_[blue]#urls.py#_ distributed among the apps. The project _urls.py_ is used as an entrance point and is called *root URLconf*.
+The place to set the root URLconf is _settings.py_
+[source]
+----
+ROOT_URLCONF = 'PROJECT_NAME.urls'
+---- 
+NOTE: PROJECT_NAME is the name of the project. It is generated while creating a project
+
+When Django receives a request, it starts to look in _URLconf_ to find matching url.
+
+CAUTION: As soon Django had found the matching url, it stops searching. That is why the order in the _urlpatterns_ *mattes*.
+
+=== url function
+
+[source]
+----
+def url(regex, view, kwargs, name=None
+----
+* *_regex_*: regular expression for matching URL pattern in strings.
+* *_view_*: view function, used to process the user requests.
+
+TIP: it accepts also the return of the *_django.conf.urls.include_* to reference external _urls.py_
+
+* *_kwargs_*: arguments, passed to the view function. (rarely used)
+* *_name_*: `Unique` identifier of the URL. This name can be used in the whole project.
+
+TIP: Never use hard coded URLs - always refer to the URLs by its name
+
+TIP: The *_regex_* can be checked here:  <<regexr.com#urls,regexr.com>> or https://regex101.com/
+
+=== Basic URLs
+Basic URL is just a matter of matching string: `about`:
+[source]
+----
+urlpatterns = [
+    url(r'^$', views.home, name='home'),
+    url(r'^about/$', views.about, name='about'),
+    url(r'^about/company/$', views.about_company, name='about_company')
+]
+----
+
+The view functions would look like this:
+[source]
+----
+def about(request):
+    
+    return render(request, 'about.html')
+
+def about_company(request):
+    
+    return render(request, 'about_company.html', {'company_name': 'Simple Complex'})
+----
+
+=== Advanced URLs
+
+Advanced URLs can be created by using regex to create dynamic URLs. As example user name can be used to show the user page:
+
+[source]
+----
+urlpatterns = [
+    url(r'^about/$', views.about, name='about'),
+    url(r'^(?P<username>[\w.@+-]+)/$', views.user_profile, name='user_profile')
+]
+----
+
+TIP: with such define each entrance would fit to the URL. So if the user would have the his name=about, the page will never be shown, because Django will always find first the 'about' page. 
+To avoid this a prefix can be used e.g. `/profile/<username>` where `profile` is the prefix.
+
+To create a  dynamic page URL also integer IDs can be used. e.g. Board.ID
+
+[source]
+----
+url(r'^boards/(?P<pk>\d+)/$', views.board_topics, name='board_topics')
+----
+
+The expression `\d+`, part of regex will match an integer. This integer can be used to retrive the *Board* from the database.
+`(?P<pk>\d+)` includes `<pk>` and it tells Django to capture the value into the argument `pk`.
+
+With this the view function needs to be updates like this:
+[source]
+----
+def board_topics(request, pk):
+---- 
+It is possible to have own parameter name in the view function. Therefore the regex needs to be adapted like that:
+[source]
+----
+url(r'^boards/(\d+)/$', views.board_topics, name='board_topics')
+----
+However `pk`, staying for *_Primary Key_* is conventionally used
+
+=== Using URLs API
+The html template can use it like:
+[source]
+----
+<a href="{% url 'board_topics' board.pk %}">{{ board.name }}</a>
+
+----
+
+TIP: Use `{% url %}` template tag to compose the application url
+
+The first parameter is the *name* of the URL as it was defined in *_urls.py_*, followed by the attribute, here: `board.pk`, also defined in *_urls.py_*. 
+
+
+{% comment %} Add something about height here {% endcomment %}
+
+[source]
+----
+<li class="breadcrumb-item">Boards</li>
+<!-- With the link to another page url -->
+<li class="breadcrumb-item"><a href="{% url 'home' %}">Boards</a></li>
+----
+
+=== Reuseable Templates
+
+To reuse templates a master page can be created e.g. _base.html_. Every template can extend this special template. Therefore the `{% block %}` tag was introduced into the template. It reserve the space for the child template.
+The child template can insert code within this space. Some default values can be set with the space, which will be used, if the child doesn't set any value. 
+[source]
+----
+    <title>{% block title %}Django Boards{% endblock %}</title>
+----
+
+=== Forms
+[source]
+----
+  <form method="post">
+----
+The `<form>` tag must define the `method` to instruct browser how to communicate with the server.
+  
+* `GET`:  is used to retrieve data from the server. +
+* `POST`: is used to change data on server. +
+
+NOTE: Django protects all `POST` requests using a `CSRF Token` (Cross-Site Request Forgery Token). This is done by `{% csrf_token %}` tag.
+
+In the form the name of the HTML inputs has to be set:
+[source]
+----
+<input type="text" class="form-control" id="id_subject" name="subject">
+or
+<textarea class="form-control" id="id_message" name="message" rows="5"></textarea>
+----
+The name will be used to retrieve data on the server. In Django view function the data can be used as:
+[source]
+----
+subject = request.POST['subject']
+message = request.POST['message']
+---- 	
+ 
+The Forms APIs can be imported from `django.forms`. There are two types of Forms in Django: `forms.Form` and `forms.ModelForm`. `forms.ModelForm` is a subclass of `forms.Form` and is associated with the Model class.
+
+
+== Testing
+The tests can be implemented in [blue]#tests.py# of the App.
+To executer the automated tests:
+[source]
+----
+python manage.py test
+----
+To see more test details:
+[source]
+----
+python manage.py test --verbosity=2
+----
+=== Server responce code
+[options="header",cols="1,1,1"]
+|===
+|Response code   |meaning   |Notes   
+//----------------------
+|200   |success   				| if everything is ok   
+|500   |internal server error   |error   
+|404   |page not found			|when the url was not found - check the _urlpatterns_ in project [blue]#urls.py#  
+|===
+
+
+
+
+
+  
+
+
+
+
+
+ENDE

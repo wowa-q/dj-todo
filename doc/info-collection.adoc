@@ -1,0 +1,87 @@
+
+= Design decisions
+
+https://github.com/robotframework/robotframework
+
+The Django template language: https://docs.djangoproject.com/en/dev/ref/templates/language 
+{% comment %} Add something about height here {% endcomment %}
+== Model-View-Controller pattern
+
+* *Model* defines the data structure. This is usually a database and is the base layer to an application.
+* *View* displays some or all of the data to the user with HTML and CSS.
+* *Controller* handles how the database and the view interact. *This is handled by Django* The pattern Django utilizes is called the Model-View-Template (MVT) pattern. The view and template in the MVT pattern make up the view in the MVC pattern. All you need to do is add some URL configurations to map the views to, and Django handles the rest!
+
+https://realpython.com/the-model-view-controller-mvc-paradigm-summarized-with-legos/
+
+== Build information
+
+* setup virtual environment: _python3 -m venv finVenv_
+** last part _finVenv_ is the venv name
+* start virtual env activate.bat in folder _finVenv_ _Scripts_ needs to be executed
+* install Django in the venv: _pip install Django_
+* create new project: _django-admin startproject PROJECT_NAME_
+* start server _python manage.py runserver_
+* run the server open browser: _http://127.0.0.1:8000/_ -> local host will be started
+* create new App: _python manage.py startapp appName_
+* register the App: djangoProjecName/settings.py: INSTALLED_APPS = [.. "AppName"]
+* create a View in the App: AppName/views.py
+
+Django supports Object Relational Mapper (ORM) -> no SQL needed 
+=== Installed packages:
+[options="header",cols="1,1,1"]
+|===
+|Package   |installation   |package purpose   
+//----------------------
+|Django   			|_pip install Django_   			|Django framework   
+|wdiget-tweaks   	|pip install django-widget-tweaks   |utility to render forms   
+|Row3A   			|Row3B   							|Row3C   
+|===
+
+
+
+== Documentation
+=== ASCIIDOC
+<<docs.asciidoctor.org/asciidoc/latest/syntax-quick-reference/,Quick Reference>> 
+
+<<https://asciidoc.org/asciidoc.css-embedded.html#_introduction/,Introduction>> 
+
+
+==== Tables
+[cols="1,1"]
+|===
+|Cell in column 1, row 1 
+|Cell in column 2, row 1
+|===
+New line can be started
+
+
+[source]
+----
+puts "Hello, World!"
+----
+== Layout
+=== BOOTSTRAP
+==== Navigation bar
+<<getbootstrap.com/docs/4.0/components/navbar/,Nav-Bar>> 
+
+=== Fonts
+
+https://fonts.google.com/?preview.text=Django%20Boards&preview.text_type=custom[Google Fonts] 
+
+
+
+
+== Python
+=== Python APIs und modules
+https://www.programcreek.com/python/index/module/list
+
+=== XML Parser
+https://docs.python.org/3/library/xml.etree.elementtree.html
+https://www.edureka.co/blog/python-xml-parser-tutorial/
+
+=== Django Extensions
+https://github.com/django-extensions/django-extensions
+
+= Web design
+== HTML
+https://www.html-seminar.de/einsteiger.htm

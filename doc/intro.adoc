@@ -1,0 +1,31 @@
+= Intro
+
+== Einstieg
+
+Die App soll auf dem Homeserver laufen.
+In WLAN soll die App aufgerufen werden koennen. 
+Die App soll auf dem Server gespeicherte xml oder JSON Dateien einlesen. 
+Man kann die neue Datei erstellen bzw. erweitern indem eine csv Datei hinzugefuegt wird.
+Die App soll im Browser den Finanzstatus anzeigen.
+Die App soll unterschiedliche Ansichten unterstuetzen.
+
+ * Gesamtstatus
+ * Nach Kateorien gegliedert
+ * ..
+ 
+Backend soll automatisch die Transfers der Kategorie zuordnen.
+Die App soll automatisch lernen welche Kategorie gestzt werden soll.
+
+== Requirements specification 
+xml with the following structure:
+
+* _specification_
+** _chapter:tag_ 
+*** _name:attribute_
+*** _req:tag_ has requirement attributes
+**** _ID:attribute_ unique requirement ID
+**** _description:attribute_ requirement description
+**** _rationale:attribute_ why is the requirement needed
+**** _test:attribute_ how should the requirement be tested -> link to test
+**** _status:attribute_ requirement status [draft, ready, implemented, tested, released]
+
