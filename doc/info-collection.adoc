@@ -71,17 +71,4 @@ https://fonts.google.com/?preview.text=Django%20Boards&preview.text_type=custom[
 
 
 
-== Python
-=== Python APIs und modules
-https://www.programcreek.com/python/index/module/list
 
-=== XML Parser
-https://docs.python.org/3/library/xml.etree.elementtree.html
-https://www.edureka.co/blog/python-xml-parser-tutorial/
-
-=== Django Extensions
-https://github.com/django-extensions/django-extensions
-
-= Web design
-== HTML
-https://www.html-seminar.de/einsteiger.htm

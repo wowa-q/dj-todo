@@ -63,10 +63,10 @@ exit()
 ** *_djangoProjecName_*
 *** [blue]#init.py#
 *** [blue]#settings.py#: all project's configurations	
-*** [blue]#urls.py#: routes mapping within the project (https://docs.djangoproject.com/en/3.2/topics/http/urls/[doc] )
-*** [blue]#wsgi.py#: small gateway interface for deployment (https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/[doc])
-*** [blue]#asgi.py#: small gateway interface for deployment (https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/[doc])
-** [blue]#manage.py#: Django command line utility (https://docs.djangoproject.com/en/3.2/ref/django-admin/[doc])
+*** [blue]#urls.py#: routes mapping within the project (https://docs.djangoproject.com/en/5.0/topics/http/urls/[doc] )
+*** [blue]#wsgi.py#: small gateway interface for deployment (https://docs.djangoproject.com/en/5.0/howto/deployment/wsgi/[doc])
+*** [blue]#asgi.py#: small gateway interface for deployment (https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/[doc])
+** [blue]#manage.py#: Django command line utility (https://docs.djangoproject.com/en/5.0/ref/django-admin/[doc])
 ** *_templates_*: Django template engine
 ** *_static_*: Folder for static files, such as CSS, or Js etc.
 ** *_APP_NAME_*: Folder created by creating a new App in the project. The name can be selected by creating new App.
