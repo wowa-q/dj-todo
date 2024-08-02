@@ -13,9 +13,73 @@ def  index(request):
 
 > Often regular expression is useful. [Here the regular expression can be tested](https://regex101.com/)
 
+### Class based view
+Instead of function a class can be used and is the more flexible and convinient way to create views
+
+``` python
+from  django 
+
+# Create your views here.
+from django.views.generic import View, TemplateView
+
+class IndexView(TemplateView):
+	template_name = 'index.html' # the field holds the name of the template
+
+	# this function injects data into the template
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['injectme'] = 'BASIC Injection'
+		return context
+
+```
+Django provides some built-in view classes for different use cases. Here are the most frequently used:
+- ListView 
+- DetailView
+- DeleteView
+- UpdateView 
+- CreateView
+
+``` python
+class SchoolListView(ListView):
+    model = models.School
+    # returns a context modelname_list -> school_list and it can be used in the templates
+    # better however is to define own name:
+    context_object_name = 'schools'
+    template_name = 'app1/schools.html'
+```
+### **CRUD**
+Usually project require to **create**, **read**, **update** and **delte** objects. **CRUD**
+
+Here are examples for URL:
+``` python
+	# to list all objects from the model School
+	path('schools/', views.SchoolListView.as_view(),name='list'),
+	# to show one specific school with a primary key: pk
+    path('schools/<int:pk>/', views.SchoolDetailView.as_view(), name='school_detail'),
+    path('create/', views.SchoolCreateView.as_view(), name='create'),
+    path('update/<int:pk>/', views.SchoollUpdateView.as_view(),name='update'), 
+    path('delete/<int:pk>/', views.SchoolDeleteView.as_view(),name='delete'), 
+```
+Views:
+``` python
+class SchoolDeleteView(DeleteView):
+    model = models.School
+	# is required to direct to another page after deleting
+    success_url = reverse_lazy('app1:list')
+class SchoollUpdateView(UpdateView):
+	# only these fields from the model will be updated
+    fields = ('name', 'principal')
+    model=models.School
+class SchoolCreateView(CreateView):
+    model = models.School
+    fields = ('name', 'principal', 'location')
+```
+
+
 ## `models.py`
 
 Is representation of the data base of the web site. Each class will be transformed into database tables.
+
 
 ### model shell operations
 
@@ -33,6 +97,27 @@ from l5app.models import UserProfileInfo
 # Register your models here.
 admin.site.register(UserProfileInfo)
 ```
+Here an examle for a model:
+``` python
+class School(models.Model):
+    name = models.CharField(max_length=256)
+    principal = models.CharField(max_length=256)
+
+    def __str__(self) -> str:
+        return self.name
+
+class Student(models.Model):
+    name = models.CharField(max_length=256)
+    age = models.PositiveIntegerField()
+    location = models.ForeignKey(School,
+								# related_name will be used in the templates
+                                 related_name='students',    
+                                 on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.name
+```
+Django provides different predefined fields.
 
 ## `forms.py`
 The file can be created in an Application to define own Forms.
