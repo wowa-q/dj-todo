@@ -52,13 +52,13 @@ Usually project require to **create**, **read**, **update** and **delte** object
 
 Here are examples for URL:
 ``` python
-	# to list all objects from the model School
-	path('schools/', views.SchoolListView.as_view(),name='list'),
-	# to show one specific school with a primary key: pk
-    path('schools/<int:pk>/', views.SchoolDetailView.as_view(), name='school_detail'),
-    path('create/', views.SchoolCreateView.as_view(), name='create'),
-    path('update/<int:pk>/', views.SchoollUpdateView.as_view(),name='update'), 
-    path('delete/<int:pk>/', views.SchoolDeleteView.as_view(),name='delete'), 
+# to list all objects from the model School
+path('schools/', views.SchoolListView.as_view(),name='list'),
+# to show one specific school with a primary key: pk
+path('schools/<int:pk>/', views.SchoolDetailView.as_view(), name='school_detail'),
+path('create/', views.SchoolCreateView.as_view(), name='create'),
+path('update/<int:pk>/', views.SchoollUpdateView.as_view(),name='update'), 
+path('delete/<int:pk>/', views.SchoolDeleteView.as_view(),name='delete'), 
 ```
 Views:
 ``` python
