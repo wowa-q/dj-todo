@@ -1,5 +1,9 @@
 # Django in a nut shell
 
+## Template-View-Model Pattern
+
+![alt text](img/mvt.png)
+
 ## Create new project
 
  ```shell
@@ -75,6 +79,9 @@ django-admin startapp APP_NAME
 * models.py: contains a series of classes that Djangos ORM converts to database tables.
 * views.py: contains functions and classes that handle what data is displayed in the HTML templates.
 * tests.py: contains test classes
+
+
+
 
 # Links
 * urls.py: routes mapping within the project [doc](https://docs.djangoproject.com/en/5.0/topics/http/urls/)

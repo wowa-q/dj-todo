@@ -9,6 +9,15 @@ from  django.shortcuts  import  render
 # Create your views here.
 def  index(request):
 	return  render(request, 'l4app/index.html')
+
+def  readModel(request):
+	template = 'l4app/index.html'
+	mod = MyModel("myName", "other Par")
+	# disctionary, which is provided for rendering and can be used in template
+	data = {
+		'mymod': mod
+	}
+	return  render(request, template, data)
 ```
 
 > Often regular expression is useful. [Here the regular expression can be tested](https://regex101.com/)
@@ -80,6 +89,8 @@ class SchoolCreateView(CreateView):
 
 Is representation of the data base of the web site. Each class will be transformed into database tables.
 
+A models represents a table in the data base.
+
 
 ### model shell operations
 
@@ -97,7 +108,8 @@ from l5app.models import UserProfileInfo
 # Register your models here.
 admin.site.register(UserProfileInfo)
 ```
-Here an examle for a model:
+Here an example for a model:
+
 ``` python
 class School(models.Model):
     name = models.CharField(max_length=256)
@@ -118,6 +130,7 @@ class Student(models.Model):
         return self.name
 ```
 Django provides different predefined fields.
+
 
 ## `forms.py`
 The file can be created in an Application to define own Forms.
