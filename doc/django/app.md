@@ -19,11 +19,45 @@ def  readModel(request):
 	}
 	return  render(request, template, data)
 ```
+The data can be provided to be displaied via the template in the response as a dictionary like `data` in the listing above. In the template the data can be retrieved `mymod`.
 
 > Often regular expression is useful. [Here the regular expression can be tested](https://regex101.com/)
 
-### Class based view
-Instead of function a class can be used and is the more flexible and convinient way to create views
+### Class based view [CBV](https://docs.djangoproject.com/en/5.1/topics/class-based-views/)
+Instead of function a class can be used and is the more flexible and convinient way to create views. In the class the methods `get` and `post` need to be implemented:
+
+``` python
+class ReviewView(View):
+
+    def post(self, request):
+        form = ReviewModelForm(request.POST)
+        if form.is_valid():
+            # this is possible just because it is instance of ModelForm
+            form.save()
+            return HttpResponseRedirect('thanks')
+        
+        return render(request, "reviews/review.html", {'form':form})
+    
+    def get(self, request):
+        form = ReviewModelForm()
+        return render(request, "reviews/review.html", {'form':form})
+
+```
+
+This is how the url shall be adapted.
+``` python
+# urls.py
+urlpatterns = [
+    path("about/", TemplateView.as_view(template_name="about.html")),
+	path("", views.ReviewView.as_view(), name='review'),
+]
+
+``` 
+
+Besides the generic View-Class, there are plenty of spetialized View-Classes e.g. `TemplateView`:
+
+#### TemplateView
+
 
 ``` python
 from  django 
@@ -131,31 +165,73 @@ class Student(models.Model):
 ```
 Django provides different predefined fields.
 
+### Database queries
+models.Model classes provides methods to save, create and delete data in database Model.objects is a field.
+
+Django cashes the queries. For perfomance it is better to store the quesry in a variable `db_index=True` - helps to find the field quicker
+
+```python
+
+from .models import App
+
+App.objects.all() # is a query to get all entries from the table App
+App.objects.filter(title='my-Name') # searching for the entry with this title
+
+```
+
+#### Bulk operations
+
+- You can delete multiple model instances (i.e. database records) at once: [dajngo delete object](https://docs.djangoproject.com/en/5.1/topics/db/queries/#deleting-objects)
+
+- You can update multiple model instances (i.e. database records) at once: [django update objects](https://docs.djangoproject.com/en/5.0/ref/models/querysets/#bulk-update)
+- You can create multiple model instances (i.e. database records) at once: [django create](https://docs.djangoproject.com/en/5.0/ref/models/querysets/#bulk-create)
+
+### Table fields
+
+Django has different options to setup relationships btw. the models:
+- one-to-many: `models.ForeignKey('ModelName', on_delete=models.CASCADE)`
+- one-to-one: `models.OneToManyOne('Product', on_delete=models.CASCADE)`
+- many-to-many: `models.ManyToManyField('Product')` no `on_delete` attribute.
+
+#### spcial relationships
+
+1. Circular relationship: one model depends on the other and vice versa - can be realized like this:
+
+```python
+# circular relationship
+class Product(models.Model):
+  # ... other fields ...
+  last_buyer = models.ForeignKey('User')
+  
+class User(models.Model):
+  # ... other fields ...
+  created_products = models.ManyToManyField('Product')
+
+```
+
+2. Relation with itself - depends on the instances of the same table
+
+```python
+# same model relationship
+class User(models.Model):
+  # ... other fields ...
+  friends = models.ManyToManyField('self') 
+
+```
+
+3. Relationship with models other apps (built-in or custom apps)
+
+```python
+# relationship with tables from other apps
+class Review(models.Model):
+  # ... other fields ...
+  product = models.ForeignKey('store.Product') # '<appname>.<modelname>'
+```
+
 
 ## `forms.py`
 The file can be created in an Application to define own Forms.
 
-### Defining a model Form
-``` python
-1 from  django  import  forms
-2 from  l5app.models  import  UserProfileInfo  
-
-3 class  UserProfileInfoForm(forms.ModelForm):
-4	portfolio  =  forms.URLField(required=False)
-5	picture  =  forms.ImageField(required=False)  
-
-6	class  Meta():
-7		model  =  UserProfileInfo
-8		exclude  = ('user', )
-```
-1. import django forms
-2. import app model. Here `UserProfileInfo` model will be used
-3. create a class which inherits from django `forms.ModelForm`
-4. define the fields from the model and the Form type from django
-5. define another field
-6. define a Meta class within the user-defined Form class (needs to be there)
-7. mapping to the model from the app
-8. exclude `user` field from the form. There are different way to exclude or include fields e.g. `fields  ='__all__` can be used to include all fields from the model.
 
 ### Defining a user Form
 
@@ -184,3 +260,241 @@ class  FormName(forms.Form):
 			raise  forms.ValidationError('email not the same!')
 ```
 The listing is showing how to catch bots in the Form, where user can enter some data.
+
+#### Setting up form fields
+
+``` python
+# forms.py
+class ReviewForm(forms.Form):
+    user_name = forms.CharField(label='Enter your name',
+                                max_length=10, 
+                                error_messages={
+                                    "required": "Your name must not be empty",
+                                    "max_length": "Your maximum length was achieved"
+                                })
+    rating = forms.IntegerField(max_value=5,
+                                min_value=1,
+                                label='Your rating',
+                                error_messages={
+                                    'max_value': 'Rating is higher than allowed',
+                                    'min_value': 'Rating is lower than allowed'
+                                })
+    review_text = forms.CharField(label='Your feedback',
+                                  widget=forms.Textarea,
+                                  )
+```
+- the error message can be adjusted per form-field
+- different types of the fields are provided by django
+- the widget can be adjusted e.g. user_name is html input with the type=text and review_text is html textarea tag
+- some validations can be configured for the form
+
+``` python
+# views.py
+def review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        # check if entered form data were valid
+		if form.is_valid():
+            print(form.cleaned_data)
+			# will redirect to the url with the name 'thanks'
+            return HttpResponseRedirect('thanks')
+        else:
+            pass
+    else:
+        form = ReviewForm()
+    # form instance is provided and can be used in the template
+    return render(request, "reviews/review.html", {'form':form})
+```
+
+The From can be built in a for Loop:
+- the class "error" will be set only if from is not is_valid()
+- the 'error' class has own styling -> the field causing error will get own styling and user can focus on fixing those
+- the fields from the `ReviewForm` will be displaid by the for loop
+
+``` django html
+{% comment %} review.html {% endcomment %}
+{% for field in form  %}
+
+    <div class="form-control {% if field.errors %}errors{% endif %}">
+        {{field.label_tag}}
+        {{field}}
+        {{field.errors}}  
+    </div>
+
+{% endfor %}
+```
+### Defining a model Form
+
+Instead of `forms.Form` inherit from `forms.ModelForm`. This simplifies the updating the datbase from the data provided by the form. THe configuration of the form is happening in the Meta class.
+
+``` python
+# forms.py
+from django import forms
+from .models import Review
+
+class ReviewModelForm(forms.ModelForm):    
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+        labels = {
+            'user_name': 'Your Name',
+            'text': 'Your review text',
+            'rating': 'Your Rating'
+        }
+        error_messages={
+            
+            'user_name': {
+                'required': 'Your name must not be empty',
+                'max_length': 'Your maximum length was achieved'
+            },
+            'rating': {
+                'max_value': 'Rating is higher than allowed',
+                'min_value': 'Rating is lower than allowed'
+            },
+            'text': {}
+        }
+```
+This allows to directly save the data provided via form to the database:
+
+``` python
+# views.py
+...
+
+def review(request):
+    if request.method == 'POST':
+        form = ReviewModelForm(request.POST)
+        if form.is_valid():
+            # this is possible just because it is instance of ModelForm
+            form.save()
+            return HttpResponseRedirect('thanks')
+    else:
+        form = ReviewModelForm()
+    
+    return render(request, "reviews/review.html", {'form':form})
+
+```
+
+Steps how to use ModelForm:
+
+``` python
+1 from  django  import  forms
+2 from  l5app.models  import  UserProfileInfo  
+
+3 class  UserProfileInfoForm(forms.ModelForm):
+4	portfolio  =  forms.URLField(required=False)
+5	picture  =  forms.ImageField(required=False)  
+
+6	class  Meta():
+7		model  =  UserProfileInfo
+8		exclude  = ('user', )
+```
+1. import django forms
+2. import app model. Here `UserProfileInfo` model will be used
+3. create a class which inherits from django `forms.ModelForm`
+4. define the fields from the model and the Form type from django
+5. define another field
+6. define a Meta class within the user-defined Form class (needs to be there)
+7. mapping to the model from the app
+8. exclude `user` field from the form. There are different way to exclude or include fields e.g. `fields  ='__all__` can be used to include all fields from the model.
+
+## File handling in Django
+
+### configuration
+
+In _settings.py_ the `MEDIA_ROOT` needs to be configured to set the path where django will store the files.
+```python
+# settings.py
+
+MEDIA_ROOT = BASE_DIR / "uploads"
+```
+
+The dajngo object of `class UploadedFile`
+[UploadedFile](https://docs.djangoproject.com/en/5.1/ref/files/uploads/)
+The instance of this class will be provided by the `request.POST` attribute:
+
+```python
+def post(self, request):
+        uploaded_file = request.FILES["image"]  # 'image' is defined in html name='image'
+```
+
+The instance of the `UploadedFile` provides methods:
+- read
+- multiple_chunks
+- chunks
+- 
+and attributes:
+- name
+- size
+- content_type
+- content_type_extra
+- charset
+
+There are some childs of the `UploadedFile`:
+- `TemporaryUploadedFile`
+- `InMemoryUploadedFile`
+
+### Using Form for File-Upload
+
+```python
+# forms.py
+from django import forms
+
+class ProfileForm(forms.Form):
+    image = forms.FileField(
+        label='User image file:'
+    )
+```
+
+- `FileField` defines the name of the file which is stored 
+  - The label of the file-input widget can be configured with the parameter `label`
+
+The Form can be used then in the views as following:
+
+```python
+# views.py
+from .forms import ProfileForm
+
+def store_file(file):
+    """helper function it stores the file in chuks
+    Args: file (FileUploaded): File uploaded via form and post method
+    """
+    with open("temp/image.jpg", "wb+") as dest:
+        for chunk in file.chunks():
+            dest.write(chunk)
+
+class CreateProfileView(View):
+    # Opens the Form, to be filled and submitted by the user
+    def get(self, request):
+        form_instance = ProfileForm()
+
+        return render(request, 
+                      "profiles/create_profile.html", 
+                      {"form": form_instance})
+    # submits the form after validation 
+    def post(self, request):
+        submitted_form = ProfileForm(request.POST, request.FILES)
+        if submitted_form.is_valid():
+            if 'image' in request.FILES:
+                store_file(request.FILES['image']) # defined in form-fields (see above)
+            # Redirection if submitting was successful
+            return HttpResponseRedirect("prof")
+        else:
+            # in case of an error the form will be just reloaded
+            form_instance = ProfileForm()
+            return render(request, 
+                      "profiles/create_profile.html", 
+                      {"form": form_instance})
+```
+
+### Using `ModelForm` for File-Upload
+
+```python
+# forms.py
+from django import forms
+
+class ProfileForm(forms.Form):
+    image = forms.FileField(
+        label='User image file:'
+    )
+```

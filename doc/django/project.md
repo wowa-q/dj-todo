@@ -50,6 +50,8 @@ TEMPLATES  = [
 ### Django static files configuration [doc](https://docs.djangoproject.com/en/5.0/howto/static-files/)
 
 To use static files, such as images, css etc. the path needs to be configured in *settings.py*.
+Firt make sure make sure this APP is included:
+`'django.contrib.staticfiles',`
 ```python
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
