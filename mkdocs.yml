@@ -3,12 +3,49 @@ site_name: Manual
 # anpassen auf den Ordner (standard ist docs)
 docs_dir: doc
 # setting up the theme for documentation
+# theme:
+#   name: "material" # uv add mkdocs-material
+#   highlightjs: true  # Falls Highlight.js genutzt wird
+#   hljs_languages:
+#     - python
+#     - javascript
+#     - html
+#     - css
+#     - html
+#     - django
+
+
 theme:
-  name: "material" # uv add mkdocs-material
+  name: "material"  # UV: mkdocs-material ist installiert
+  palette:
+    primary: indigo
+    accent: deep purple
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - content.code.copy  # Ermöglicht Codeblock-Kopieren
+    - content.code.annotate  # Falls du Code-Erklärungen nutzt
+  icon:
+    annotation: material/arrow-right-circle  # Annotationen für Code
+
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+      anchor_linenums: true
+      linenums: true
+  - pymdownx.superfences  # Erweitertes Code-Highlighting
+
+extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai.min.css  # Optional
+
+
+
 
 # to generate documentation from docstrings from code
 plugins:
   - mkdocstrings
+  
 
 # include new chapter / md files
 nav:
