@@ -402,12 +402,33 @@ Steps how to use ModelForm:
 
 ### configuration
 
-In _settings.py_ the `MEDIA_ROOT` needs to be configured to set the path where django will store the files.
+In _settings.py_ the `MEDIA_ROOT` needs to be configured to set the path where django will store the files. This allows only storage of the files however. To be able also to serve the files, the URL needs to be set via `MEDIA_URL`. The reason is, that browser can't access the file system by security reason. It can acces data only by an URL.
 ```python
 # settings.py
 
 MEDIA_ROOT = BASE_DIR / "uploads"
+MEDIA_URL = "/user-madia/"
 ```
+
+After this configuration the URL needs to be made visible to django for serving the uploaded files. Therefore the project urls needs to be updated:
+
+```python
+# urls.py
+
+from django.contrib import admin
+from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path("", include('reviews.urls')),
+    path("prof", include('profiles.urls'))
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+```
+With adding static function, django will handle the uploaded files as additional static files.
+
 
 The dajngo object of `class UploadedFile`
 [UploadedFile](https://docs.djangoproject.com/en/5.1/ref/files/uploads/)
@@ -498,3 +519,109 @@ class ProfileForm(forms.Form):
         label='User image file:'
     )
 ```
+
+### Using Model for File-Upload
+
+Django soesn't store the files in a data base, but only the path to the file on the hard drive.
+
+```python
+# models.py
+from django import models
+
+class UserProfile(models.Model):
+    # the path is the subfolder of MEDIA_ROOT
+    image = models.FileField(upload_to="images")
+    # if Pillow package is installed for images an ImageField can be used
+    # the ImageField has extra logic to validate if the selected file is an image
+    # image = models.ImageField(upload_to="images")
+```
+Using model for File-Uploads simplifies the logic:
+```python
+# views.py
+from .forms import ProfileForm
+from .models import UserProfile
+
+class CreateProfileView(View):
+    # Opens the Form, to be filled and submitted by the user
+    def get(self, request):
+        form_instance = ProfileForm()
+        return render(request, 
+                      "profiles/create_profile.html", 
+                      {"form": form_instance})
+    # submits the form after validation 
+    def post(self, request):
+        submitted_form = ProfileForm(request.POST, request.FILES)
+        if submitted_form.is_valid():
+            # model field is set to request.FILES['name of the forms field']
+            profile = UserProfile(image=request.FILES['image'])
+            # Django updates the database and stores the file under configured location 
+            # -> manual storage is not needed anymore
+            profile.save()  
+            return HttpResponseRedirect("prof")
+        else:
+            # in case of an error the form will be just reloaded
+            form_instance = ProfileForm()
+            return render(request, 
+                      "profiles/create_profile.html", 
+                      {"form": form_instance})
+```
+
+The file properties can be read after upload from the model object:
+
+```python
+from profiles.models import UserProfile
+# returns the absolute path of the file:
+UserProfile.objects.all()[0].image.path
+# returns the file size as integer
+UserProfile.objects.all()[0].image.size
+```
+
+If models is used for File Upload, the view can be simplified further by using `CreateView`:
+
+```python
+# views.py
+from django.views.generic.edit import CreateView
+from django.views.generic import ListView
+
+from .forms import ProfileForm
+from .models import UserProfile
+
+class CreateProfileView(CreateView):
+    template_name = "profiles/create_profile.html"
+    model = UserProfile
+    fields = "__all__" # to process all the fields of the model in the template
+    success_url = "profiles"
+```
+
+## Sessions
+
+Sessions are meant to have temporary, but long living data. Espcially for User specific data Sessions are very useful. To store Session data coockies are stored on the client and the server can read the session data from there.
+
+To use Django Session features the `SessionMiddleware` needs to be included in the _settings.py_ as well as the app `'django.contrib.sessions'` is installed:
+```python
+# settings.py
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+INSTALLED_APPS = [
+    'reviews',
+    'profiles',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+
+SESSION_COOKIE_AGE = 12000 # seconds (default is set to two weeks)
+```
+With this configuration django features are supported, including the coockies starage etc.

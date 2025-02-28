@@ -123,14 +123,12 @@ The Application views need to be imported, so they views can be called at the ur
 ]
 ```
 >3: import the views from the application with the name *l4app*.
+
 >6: all urls, starting with *l4app/* will be routed to the application url definition. The App must have a *urls.py* where `urlpatterns` is defined.
-  
 
+For debugging following statements can help:
+```python
+print(request.build_absolute_uri())
+print(reverse("favorite")) # favorite is the url name
+```
 
-
-
-
-
-
-
-> Written with [StackEdit](https://stackedit.io/).

@@ -1,0 +1,34 @@
+site_name: Manual
+
+# anpassen auf den Ordner (standard ist docs)
+docs_dir: doc
+# setting up the theme for documentation
+theme:
+  name: "material" # uv add mkdocs-material
+
+# to generate documentation from docstrings from code
+plugins:
+  - mkdocstrings
+
+# include new chapter / md files
+nav:
+  - Home: index.md
+  - Git Basics: git-basics.md
+  - SQL Basics: sql_basics.md
+  - Django:
+      - Django in Nutshell: django/dj_nutshel.md      
+      - App: django/app.md
+      - Deployment: django/deployment.md
+      - Database: django/dj_db.md
+      - Admin: django/admin.md
+      - Testing: django/dj_testing.md
+      - Project Structure: django/project.md
+      - Templates: django/templates.md
+      - User Handling: django/user_handling.md
+  - HTML & CSS:
+      - HTML Basics: html/html-nutshell.md
+      - CSS Basics: html/css-nutshell.md
+  - Bootstrap:
+      - Basics: basics.md
+  - Python:
+      - Python libs: python/libs.md

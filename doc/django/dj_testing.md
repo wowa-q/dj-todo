@@ -51,3 +51,10 @@ If function based view is implemented `resolve(url).func` is used to verify if t
 
 [Youtube - Lektion 3: Views](https://www.youtube.com/watch?v=hA_VxnxCHbo&list=PLbpAWbHbi5rMF2j5n6imm0enrSD9eQUaM&index=3)
 
+## Server response code
+
+|Response code   |meaning   |Notes   
+|--|--|--|
+|200   |success   				| if everything is ok   
+|500   |internal server error   |error   
+|404   |page not found			|when the url was not found - check the _urlpatterns_ in project urls.py 

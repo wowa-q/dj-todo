@@ -2,7 +2,7 @@
 
 ## Template-View-Model Pattern
 
-![alt text](img/mvt.png)
+![alt text](img/MVT.png)
 
 ## Create new project
 
