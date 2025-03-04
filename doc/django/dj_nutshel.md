@@ -6,25 +6,28 @@
 
 ## Create new project
 
- ```shell
+```shell
 django-admin startproject PROJECT_NAME
 ```
+
 ## *Start server:* 
- ```shell
+
+```shell
 python manage.py runserver
- ```
+```
  
-NOTE: Hit _CTRL + BREAK_ or _CTRL + C_ to stop the development server.
+NOTE: Hit `CTRL + BREAK` or `CTRL + C` to stop the development server.
 
 
 ## Create new App:
- ```shell
+
+```shell
 django-admin startapp APP_NAME
- ```
+```
 
 ## Create data base - migration
 
- ```shell
+```shell
 1 python manage.py migrate
 2 python manage.py makemigrations
 3 python manage.py migrate
@@ -36,16 +39,16 @@ django-admin startapp APP_NAME
   3. update the DB with the App changes
   4. opens the python shell, which can be used to interact with the migrated models / database tables:
 
- ```python
-1 >>> from l2app.models import Topic
+```python
+1 >>> from l2app.models import Topic        # l2app is the django App
 2 >>> t= Topic(top_name="Sicial Network")
 3 >>> t.save()
 4 >>> exit()
 ```
 
-1. _l2app_ is the name of the app. The model _Topic_ is imported
-2. New data entry for the table _Topic_ is created
-3. The data entry is stored into the data base in the table _Topic_
+1. `l2app` is the name of the app. The model `Topic` is imported
+2. New data entry for the table `Topic` is created
+3. The data entry is stored into the data base in the table `Topic`
 4. To leave the python shell
 
 

@@ -53,6 +53,10 @@ nav:
   - Git Basics: git-basics.md
   - SQL Basics: sql_basics.md
   - Django:
+      - chapters:
+        - Models: django/chapters/models.md
+        - Views: django/chapters/views.md
+        - Forms: django/chapters/forms.md
       - Django in Nutshell: django/dj_nutshel.md      
       - App: django/app.md
       - Deployment: django/deployment.md
