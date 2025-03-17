@@ -136,8 +136,8 @@ async def current_datetime(request):
     return HttpResponse(html)
 ```
 
-
 ## Class based view [CBV](https://docs.djangoproject.com/en/5.1/topics/class-based-views/)
+
 Instead of function a class can be used and is the more flexible and convinient way to create views. in the `URLconf` the class method `as_view()` needs to be called.
 If only few parameters on the view shall be changed, these can be passed directly to the `as_view()` function:
 ``` python
@@ -148,6 +148,8 @@ urlpatterns = [
 ]
 
 ``` 
+See [List of Views](https://docs.djangoproject.com/en/5.1/ref/class-based-views/)
+
 ### [Generic views](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base)
 In the class the methods `get` and `post` need to be implemented:
 ``` python

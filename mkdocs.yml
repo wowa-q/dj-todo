@@ -51,21 +51,27 @@ plugins:
 nav:
   - Home: index.md
   - Git Basics: git-basics.md
+  - Monorepo: monorepo.md
   - SQL Basics: sql_basics.md
   - Django:
+      - Django in Nutshell: django/dj_nutshel.md 
+      - Project Structure: django/project.md
       - chapters:
         - Models: django/chapters/models.md
         - Views: django/chapters/views.md
+        - Templates: django/chapters/templates.md
         - Forms: django/chapters/forms.md
-      - Django in Nutshell: django/dj_nutshel.md      
+        - Deployment: django/deployment.md
+        - Admin: django/admin.md
+        - Testing: django/dj_testing.md
+
       - App: django/app.md
-      - Deployment: django/deployment.md
-      - Database: django/dj_db.md
-      - Admin: django/admin.md
-      - Testing: django/dj_testing.md
-      - Project Structure: django/project.md
-      - Templates: django/templates.md
       - User Handling: django/user_handling.md
+     
+      
+      
+      - Templates: django/templates.md
+
   - HTML & CSS:
       - HTML Basics: html/html-nutshell.md
       - CSS Basics: html/css-nutshell.md
